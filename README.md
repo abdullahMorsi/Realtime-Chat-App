@@ -1,5 +1,5 @@
-#Realtime Chat App
-##Features
+# Realtime Chat App
+## Features
 - Microsoft SignalR
 - SingalR Client on JavaScript
 - SignalR Client on Windows Forms
