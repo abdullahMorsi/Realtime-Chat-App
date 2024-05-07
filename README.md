@@ -1,5 +1,4 @@
 # Realtime Chat App
-***
 ## Features
 - Microsoft SignalR
 - SingalR Client on JavaScript
