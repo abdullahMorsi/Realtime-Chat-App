@@ -1,0 +1,238 @@
+﻿@{
+    Layout = "_ChatLayout";
+}
+
+ <!-- GLOBAL-LOADER -->
+<div id="global-loader">
+    <img src="../assets/images/loader.svg" class="loader-img" alt="Loader">
+</div>
+<!-- /GLOBAL-LOADER -->
+<!-- PAGE -->
+<div class="page">
+    <div class="page-main">
+
+        <!-- app-Header -->
+        <div class="app-header header sticky">
+            <div class="container-fluid main-container">
+                <div class="d-flex">
+                    <a aria-label="Hide Sidebar" class="app-sidebar__toggle" data-bs-toggle="sidebar" href="javascript:void(0)"></a>
+                    <!-- sidebar-toggle-->
+                    <a class="logo-horizontal " href="index.html">
+                        <img src="../assets/images/brand/logo.png" class="header-brand-img desktop-logo" alt="logo">
+                        <img src="../assets/images/brand/logo-lion-light.png" style="width:100px" class="header-brand-img light-logo1"
+                             alt="logo">
+                    </a>
+                    <!-- LOGO -->
+                    
+                    <div class="d-flex order-lg-2 ms-auto header-right-icons">
+                        <div class="dropdown d-none">
+                            <a href="javascript:void(0)" class="nav-link icon" data-bs-toggle="dropdown">
+                                <i class="fe fe-search"></i>
+                            </a>
+                            <div class="dropdown-menu header-search dropdown-menu-start">
+                                <div class="input-group w-100 p-2">
+                                    <input type="text" class="form-control" placeholder="Search....">
+                                    <div class="input-group-text btn btn-primary">
+                                        <i class="fe fe-search" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- SEARCH -->
+                        <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4"
+                                aria-controls="navbarSupportedContent-4" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon fe fe-more-vertical"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /app-Header -->
+        <!--app-content open-->
+        <div class="main-content app-content mt-0">
+            <div class="side-app">
+
+                <!-- CONTAINER -->
+                <div class="main-container container-fluid">
+
+                    <!-- PAGE-HEADER -->
+                    <div class="page-header">
+                        <h1 class="page-title">Chat</h1>
+                        <div>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="javascript:void(0)">Abdullah</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Chat</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!-- PAGE-HEADER END -->
+                    <!-- Row -->
+                    <div class="row row-sm">
+                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-9">
+                            <div class="card">
+                                <div class="main-content-app pt-0">
+                                    <div class="main-content-body main-content-body-chat h-100">
+                                        <div class="main-chat-header pt-3 d-block d-sm-flex">
+                                            <div class="main-img-user online"><img alt="avatar" src="../assets/images/users/1.jpg"></div>
+                                            <div class="main-chat-msg-name mt-2">
+                                                <h6 id="username">Saul Goodmate</h6>
+                                                <span class="dot-label bg-success"></span><small  class="me-3">online</small>
+                                               
+                                            </div>
+                                           
+                                        </div>
+                                        <!-- main-chat-header -->
+                                        <div class="main-chat-body flex-2" id="ChatBody">
+                                            <div class="content-inner" id="messagebox">
+
+                                                
+                                                @* <label class="main-chat-time"><span>Today</span></label> *@
+                                                
+                                            </div>
+                                        </div>
+                                        <div>
+                                        <small style="margin-left:30px" id="typinglabel" class="me-3"></small>
+
+                                        </div>
+                                        <div class="main-chat-footer">
+                                            <input onBlur="nottyping()" onFocus="typing()" class="form-control" autocomplete="off" id="message" placeholder="Type your message here..." type="text">
+                                            <a class="nav-link" data-bs-toggle="tooltip" href="javascript:void(0)" title="Attach a File"><i class="fe fe-paperclip"></i></a>
+                                            <input type="button" onClick="sendmessage()" class="btn btn-icon  btn-primary brround" value="Send" />
+                                            @* <input onClick="testmanual()" type="button" value="lol"/> " *@
+                                            <nav class="nav">
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Row -->
+
+                </div>
+                <!-- CONTAINER CLOSED -->
+            </div>
+        </div>
+        <!--app-content closed-->
+    </div>
+
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center flex-row-reverse">
+                <div class="col-md-12 col-sm-12 text-center">
+                    Copyright © <span id="year"></span> <a href="javascript:void(0)">Abdullah</a>. Designed with <span class="fa fa-heart text-danger"></span> by <a href="javascript:void(0)"> ITI </a> All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- FOOTER CLOSED -->
+</div>
+
+@section ChatScripts{
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script>
+        // var username = "ali"
+        var username = prompt("Enter Username")
+        $("#username").html(username);
+        //define connection
+        con = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        // //start connection
+        con.start();
+
+        function sendmessage(){
+            var text = $("#message").val();
+            var message = {
+                id:0,
+                username:username,
+                message:text,
+                groupname:''
+            }
+            con.invoke("sendmessage", message)
+            $("#message").val("")
+        }
+        function typing() {
+            console.log("typing....")
+            con.invoke("istyping", username)
+        }
+
+        con.on("istypingmsg", function (name) {
+            console.log("name: " + name)
+            $("#typinglabel").html(`${name}: is typing..`)
+ 
+        })
+        
+        function nottyping() {
+            con.invoke("nottyping")
+        }
+        con.on("nottypingmsg", function () {
+            $("#typinglabel").html("")
+        })
+
+        con.on("mymessage", function (msg) {
+            // Given timestamp
+            var timestamp = msg.time;
+
+            // Parse the timestamp into a Date object
+            var date = new Date(timestamp);
+
+            // Get the hours from the Date object
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+
+            // Format the hours and minutes with leading zeros if necessary
+            var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+
+            $("#messagebox").append(`
+                        <div class="media flex-row-reverse chat-right">
+                            <div class="main-img-user online"><img alt="avatar" src="../assets/images/users/21.jpg"></div>
+                            <div class="media-body">
+                                <div class="main-msg-wrapper">
+                                    ${msg.message}
+                                </div>
+                                <div>
+                                            <span id= "timespan" > ${formattedTime} </span> <a href="javascript:void(0)"><i class="icon ion-android-more-horizontal"></i></a>
+                                </div>
+                            </div>
+                        </div>
+            `)
+        });
+
+        con.on("others", function (msg) {
+            // Given timestamp
+            var timestamp = msg.time;
+
+            // Parse the timestamp into a Date object
+            var date = new Date(timestamp);
+
+            // Get the hours from the Date object
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+
+            // Format the hours and minutes with leading zeros if necessary
+            var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+
+            $("#messagebox").append(`
+                    <div class="media chat-left">
+                        <div class="main-img-user online"><img alt="avatar" src="../assets/images/users/1.jpg"></div>
+                        <div class="media-body">
+                            <div class="main-msg-wrapper">
+                                ${msg.message}
+                            </div>
+                            <div>
+                                <span>${formattedTime}</span> <a href="javascript:void(0)"><i class="icon ion-android-more-horizontal"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    `)
+        });
+
+        
+    </script>
+}
